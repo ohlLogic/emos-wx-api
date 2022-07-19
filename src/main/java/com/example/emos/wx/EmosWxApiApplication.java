@@ -35,7 +35,7 @@ public class EmosWxApiApplication {
         list.forEach(one -> {
             String key = one.getParamKey();
             key = StrUtil.toCamelCase(key);
-            String value = one.getParamKey();
+            String value = one.getParamValue();
             try{
                 Field feild = constants.getClass().getDeclaredField(key);
                 feild.set(constants, value);
