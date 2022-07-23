@@ -77,6 +77,9 @@ emos:
     system: ohlself@163.com
     hr: ohlself@163.com
 
+  image-folder: D:/emos/image
+
+
 wx:
   app-id: wxa7f1fd9b67de3ccc
   app-secret: f51e55afe76f797e687e7a1c1e9f97c2
