@@ -3,7 +3,6 @@ package com.example.emos.wx.service.impl;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.example.emos.wx.db.dao.TbDeptDao;
 import com.example.emos.wx.db.dao.TbUserDao;
 import com.example.emos.wx.db.pojo.TbUser;
 import com.example.emos.wx.exception.EmosException;
@@ -29,6 +28,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private TbUserDao userDao;
 
+    /**
+     * code临时授权字符串，appId，appSecret
+     * @param code
+     * @return
+     */
     private String getOpenId(String code) {
         String url = "https://api.weixin.qq.com/sns/jscode2session";
         HashMap map = new HashMap();
@@ -36,6 +40,7 @@ public class UserServiceImpl implements UserService {
         map.put("secret", appSecret);
         map.put("js_code", code);
         map.put("grant_type", "authorization_code");
+        // 提交请求
         String response = HttpUtil.post(url, map);
         JSONObject json = JSONUtil.parseObj(response);
         String openId = json.getStr("openid");
@@ -61,6 +66,7 @@ public class UserServiceImpl implements UserService {
                 param.put("createTime", new Date());
                 param.put("root", true);
                 userDao.insert(param);
+                // 根据OpenId查找主键值
                 int id = userDao.searchIdByOpenId(openId);
 
                 return id;

@@ -34,11 +34,13 @@ public class EmosWxApiApplication {
         List<SysConfig> list = sysConfigDao.selectAllParam();
         list.forEach(one -> {
             String key = one.getParamKey();
+            // 将常量转成驼峰命名法
             key = StrUtil.toCamelCase(key);
             String value = one.getParamValue();
             try{
-                Field feild = constants.getClass().getDeclaredField(key);
-                feild.set(constants, value);
+                // 反射给对象变量赋值
+                Field field = constants.getClass().getDeclaredField(key);
+                field.set(constants, value);
             }catch (Exception e){
                 log.error("执行异常", e);
             }
