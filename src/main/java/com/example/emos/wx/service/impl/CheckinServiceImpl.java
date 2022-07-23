@@ -10,6 +10,7 @@ import cn.hutool.http.HttpUtil;
 import com.example.emos.wx.config.SystemConstants;
 import com.example.emos.wx.db.dao.*;
 import com.example.emos.wx.db.pojo.TbCheckin;
+import com.example.emos.wx.db.pojo.TbFaceModel;
 import com.example.emos.wx.exception.EmosException;
 import com.example.emos.wx.service.CheckinService;
 import com.example.emos.wx.task.EmailTask;
@@ -202,6 +203,24 @@ public class CheckinServiceImpl implements CheckinService {
 
                 checkinDao.insert(entity);
             }
+        }
+    }
+
+    @Override
+    public void createFaceModel(int userId, String path) {
+        HttpRequest request = HttpUtil.createPost(createFaceModelUrl);
+        request.form("photo", FileUtil.file(path));
+        HttpResponse response = request.execute();
+        String body = response.body();
+        if("无法识别出人脸".equals(body) || "照片中存在多张人脸".equals(body))
+        {
+            throw new EmosException(body);
+        }
+        else{
+            TbFaceModel entity = new TbFaceModel();
+            entity.setUserId(userId);
+            entity.setFaceModel(body);
+            faceModelDao.insert(entity);
         }
     }
 }
