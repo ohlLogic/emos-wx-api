@@ -12,6 +12,7 @@ import com.example.emos.wx.db.dao.*;
 import com.example.emos.wx.db.pojo.TbCheckin;
 import com.example.emos.wx.exception.EmosException;
 import com.example.emos.wx.service.CheckinService;
+import com.example.emos.wx.task.EmailTask;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,6 +21,7 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -47,11 +49,20 @@ public class CheckinServiceImpl implements CheckinService {
     @Autowired
     private TbCityDao cityDao;
 
+    @Autowired
+    private TbUserDao userDao;
+
     @Value("${emos.face.createFaceModelUrl}")
     private String createFaceModelUrl;
 
     @Value("${emos.face.checkinUrl}")
     private String checkinUrl;
+
+    @Value("${emos.email.hr}")
+    private String hrEmail;
+
+    @Autowired
+    private EmailTask emailTask;
 
     @Override
     public String validCanCheckIn(int userId, String date) {
@@ -137,6 +148,9 @@ public class CheckinServiceImpl implements CheckinService {
                 int risk = 1; // 1低风险 2中风险 3高风险
                 String city = (String) param.get("city");
                 String district = (String) param.get("district");
+                String address = (String) param.get("address");
+                String country = (String) param.get("country");
+                String province = (String) param.get("province");
                 if(!StrUtil.isBlank(city) && !StrUtil.isBlank(district))
                 {
                     String code = cityDao.searchCode(city);
@@ -152,7 +166,16 @@ public class CheckinServiceImpl implements CheckinService {
                             if("高风险".equals(result))
                             {
                                 risk = 3;
-                                // TODO 发送告警邮件
+                                // 发送告警邮件
+                                HashMap<String, String> map = userDao.searchNameAndDept(userId);
+                                String name = map.get("name");
+                                String deptName = map.get("dept_name");
+                                deptName = deptName != null ? deptName : "";
+                                SimpleMailMessage message = new SimpleMailMessage();
+                                message.setTo(hrEmail);
+                                message.setSubject("员工" + name + "身处高风险疫情地区警告");
+                                message.setText(deptName + "员工" + name + "," + DateUtil.format(new Date(), "yyyy年MM月dd日") + "处于" + address + ",属于新冠疫情高风险地区，请及时联系！");
+
                             }
                             else if("中风险".equals(result))
                             {
@@ -166,9 +189,6 @@ public class CheckinServiceImpl implements CheckinService {
                     }
                 }
                 // 保存签到记录
-                String address = (String) param.get("address");
-                String country = (String) param.get("country");
-                String province = (String) param.get("province");
                 TbCheckin entity = new TbCheckin();
                 entity.setUserId(userId);
                 entity.setAddress(address);

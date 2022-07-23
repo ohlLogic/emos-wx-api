@@ -45,6 +45,11 @@ spring:
       authentication-database: admin
       username: admin
       password: abc123456
+  mail:
+    default-encoding: UTF-8
+    host: smtp.163.com
+    username: ohlself@163.com
+    password: ohl19980127
 
 mybatis:
   mapper-locations: classpath*:mapper/*.xml
@@ -68,6 +73,9 @@ emos:
   face:
     createFaceModelUrl: http://192.168.2.116:3000/create_face_model
     checkinUrl: http://192.168.2.116:3000/checkin
+  email:
+    system: ohlself@163.com
+    hr: ohlself@163.com
 
 wx:
   app-id: wxa7f1fd9b67de3ccc
