@@ -71,6 +71,7 @@ emos:
     expire: 5
     cache-expire: 10
   face:
+    # 虚拟机ip地址
     createFaceModelUrl: http://192.168.2.116:3000/create_face_model
     checkinUrl: http://192.168.2.116:3000/checkin
   email:
@@ -78,7 +79,7 @@ emos:
     hr: ohlself@163.com
 
   image-folder: D:/emos/image
-
+  code: 412755371829D6C7
 
 wx:
   app-id: wxa7f1fd9b67de3ccc

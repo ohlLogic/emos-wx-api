@@ -62,6 +62,9 @@ public class CheckinServiceImpl implements CheckinService {
     @Value("${emos.email.hr}")
     private String hrEmail;
 
+    @Value("${emos.code}")
+    private String code;
+
     @Autowired
     private EmailTask emailTask;
 
@@ -128,6 +131,8 @@ public class CheckinServiceImpl implements CheckinService {
             String path = (String) param.get("path");
             HttpRequest request = HttpUtil.createPost(checkinUrl);
             request.form("photo", FileUtil.file(path), "targetModel", faceModel);
+            // 绑定code
+            request.form("code", code);
             HttpResponse response = request.execute();
             // 判断返回响应码
             if(response.getStatus() != 200)
@@ -164,6 +169,7 @@ public class CheckinServiceImpl implements CheckinService {
                         {
                             Element element = elements.get(0);
                             String result = element.select("p:last-child").text();
+                            //result = "高风险";
                             if("高风险".equals(result))
                             {
                                 risk = 3;
@@ -176,7 +182,7 @@ public class CheckinServiceImpl implements CheckinService {
                                 message.setTo(hrEmail);
                                 message.setSubject("员工" + name + "身处高风险疫情地区警告");
                                 message.setText(deptName + "员工" + name + "," + DateUtil.format(new Date(), "yyyy年MM月dd日") + "处于" + address + ",属于新冠疫情高风险地区，请及时联系！");
-
+                                emailTask.sendAsync(message);
                             }
                             else if("中风险".equals(result))
                             {
@@ -210,6 +216,7 @@ public class CheckinServiceImpl implements CheckinService {
     public void createFaceModel(int userId, String path) {
         HttpRequest request = HttpUtil.createPost(createFaceModelUrl);
         request.form("photo", FileUtil.file(path));
+        request.form("code", code);
         HttpResponse response = request.execute();
         String body = response.body();
         if("无法识别出人脸".equals(body) || "照片中存在多张人脸".equals(body))
