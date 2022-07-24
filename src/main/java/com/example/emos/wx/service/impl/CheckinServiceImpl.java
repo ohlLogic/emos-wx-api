@@ -209,6 +209,7 @@ public class CheckinServiceImpl implements CheckinService {
                 entity.setStatus((byte) status);
                 entity.setDate(DateUtil.today());
                 entity.setCreateTime(d1);
+                entity.setRisk(risk);
 
                 checkinDao.insert(entity);
             }
@@ -299,5 +300,10 @@ public class CheckinServiceImpl implements CheckinService {
         });
         return list;
 
+    }
+
+    @Override
+    public ArrayList<HashMap> searchMonthCheckin(HashMap param) {
+        return this.searchWeekCheckin(param);
     }
 }
