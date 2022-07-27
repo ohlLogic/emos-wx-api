@@ -10,7 +10,7 @@ public interface MessageService {
 
     public String insertMessage(MessageEntity entity);
 
-    public String insert(MessageRefEntity entity);
+    public String insertRef(MessageRefEntity entity);
 
     public long searchUnreadCount(int userId);
 
