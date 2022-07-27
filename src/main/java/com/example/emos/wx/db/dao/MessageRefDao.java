@@ -51,7 +51,7 @@ public class MessageRefDao {
         return rows;
     }
 
-    public long deleteMessageById(String id)
+    public long deleteMessageRefById(String id)
     {
         Query query = new Query();
         query.addCriteria(Criteria.where("_id").is(id));
