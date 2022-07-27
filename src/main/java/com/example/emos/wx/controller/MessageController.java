@@ -7,6 +7,7 @@ import com.example.emos.wx.controller.form.SearchMessageByIdForm;
 import com.example.emos.wx.controller.form.SearchMessageByPageForm;
 import com.example.emos.wx.controller.form.UpdateUnreadMessageForm;
 import com.example.emos.wx.service.MessageService;
+import com.example.emos.wx.task.MessageTask;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class MessageController {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private MessageTask messageTask;
 
     @PostMapping("/searchMessageByPage")
     @ApiOperation("获取分页消息列表")
@@ -60,5 +64,16 @@ public class MessageController {
     {
         long rows = messageService.deleteMessageRefById(form.getId());
         return R.ok().put("result", rows == 1 ? true : false);
+    }
+
+    @GetMapping("/refreshMessage")
+    @ApiOperation("刷新用户信息")
+    public R refreshMessage(@RequestHeader("token") String token)
+    {
+        int userId = jwtUtil.getUserId(token);
+        messageTask.receiveAsync(userId + "");
+        long lastRows = messageService.searchLastCount(userId);
+        long unreadRows = messageService.searchUnreadCount(userId);
+        return R.ok().put("lastRows", lastRows).put("unreadRows", unreadRows);
     }
 }

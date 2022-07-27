@@ -1,12 +1,15 @@
 package com.example.emos.wx.service.impl;
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.example.emos.wx.db.dao.TbUserDao;
+import com.example.emos.wx.db.pojo.MessageEntity;
 import com.example.emos.wx.db.pojo.TbUser;
 import com.example.emos.wx.exception.EmosException;
 import com.example.emos.wx.service.UserService;
+import com.example.emos.wx.task.MessageTask;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.crypto.hash.Hash;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private TbUserDao userDao;
+
+    @Autowired
+    private MessageTask messageTask;
 
     /**
      * code临时授权字符串，appId，appSecret
@@ -70,6 +76,14 @@ public class UserServiceImpl implements UserService {
                 // 根据OpenId查找主键值
                 int id = userDao.searchIdByOpenId(openId);
 
+                MessageEntity entity = new MessageEntity();
+                entity.setSenderId(0);
+                entity.setSenderName("系统信息");
+                entity.setUuid(IdUtil.simpleUUID());
+                entity.setMsg("欢迎您注册成为超级管理员，请及时更新你的员工个人信息。");
+                entity.setSendTime(new Date());
+                messageTask.sendAsync(id + "", entity);
+
                 return id;
             } else {
                 throw new EmosException("无法绑定超级管理员账号");
@@ -99,7 +113,8 @@ public class UserServiceImpl implements UserService {
             throw new EmosException("账户不存在");
         }
 
-        //TODO 从消息队列接受消息，转移到消息表
+        // 从消息队列接受消息，转移到消息表
+        messageTask.receiveAsync(id + "");
         return id;
     }
 
