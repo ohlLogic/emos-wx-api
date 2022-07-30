@@ -80,6 +80,10 @@ emos:
 
   image-folder: D:/emos/image
   code: 412755371829D6C7
+  recieveNotify: http://192.168.2.113:8080/emos-wx-api/meeting/recieveNotify
+
+workflow:
+  url: http://192.168.2.116:9090/emos-workflow
 
 wx:
   app-id: wxa7f1fd9b67de3ccc
