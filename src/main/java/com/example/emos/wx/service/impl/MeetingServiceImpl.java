@@ -66,7 +66,7 @@ public class MeetingServiceImpl implements MeetingService {
                 resultMap = new HashMap();
                 resultMap.put("date", date);
                 array = new JSONArray();
-                resultMap.put("list", list);
+                resultMap.put("list", array);
                 resultList.add(resultMap);
             }
             array.put(map);

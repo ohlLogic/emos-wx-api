@@ -92,6 +92,20 @@ public class UserController {
 
     }
 
+    @PostMapping("/selectUserPhotoAndName")
+    @ApiOperation("查询用户姓名和头像")
+    @RequiresPermissions(value = {"WORKFLOW:APPROVAL"})
+    public R selectUserPhotoAndName(@Valid @RequestBody SelectUserPhotoAndNameForm form)
+    {
+        if(!JSONUtil.isJsonArray(form.getIds()))
+        {
+            throw new EmosException("参数不是JSON数组");
+        }
+        List<Integer> param = JSONUtil.parseArray(form.getIds()).toList(Integer.class);
+        List<HashMap> list = userService.selectUserPhotoAndName(param);
+        return R.ok().put("result", list);
+    }
+
     private void saveCacheToken(String token, int userId) {
         redisTemplate.opsForValue().set(token, userId + "", cacheExpire, TimeUnit.DAYS);
     }

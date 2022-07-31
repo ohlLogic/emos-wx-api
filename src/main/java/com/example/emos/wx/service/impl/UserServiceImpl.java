@@ -166,5 +166,11 @@ public class UserServiceImpl implements UserService {
         return list;
     }
 
+    @Override
+    public List<HashMap> selectUserPhotoAndName(List param) {
+        List<HashMap> list = userDao.selectUserPhotoAndName(param);
+        return list;
+    }
+
 
 }

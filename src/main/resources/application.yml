@@ -72,8 +72,8 @@ emos:
     cache-expire: 10
   face:
     # 虚拟机ip地址
-    createFaceModelUrl: http://192.168.2.101:3000/create_face_model
-    checkinUrl: http://192.168.2.101:3000/checkin
+    createFaceModelUrl: http://192.168.2.102:3000/create_face_model
+    checkinUrl: http://192.168.2.102:3000/checkin
   email:
     system: ohlself@163.com
     hr: ohlself@163.com
@@ -83,7 +83,7 @@ emos:
   recieveNotify: http://192.168.2.113:8080/emos-wx-api/meeting/recieveNotify
 
 workflow:
-  url: http://192.168.2.101:9090/emos-workflow
+  url: http://192.168.2.102:9090/emos-workflow
 
 wx:
   app-id: wxa7f1fd9b67de3ccc
