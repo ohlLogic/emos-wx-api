@@ -17,10 +17,12 @@ import com.example.emos.wx.service.MeetingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -39,6 +41,9 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Value("${emos.recieveNotify}")
     private String recieveNotify;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Override
     public void insertMeeting(TbMeeting entity) {
@@ -140,6 +145,19 @@ public class MeetingServiceImpl implements MeetingService {
             log.error("删除工作流失败");
             throw new EmosException("删除工作流失败");
         }
+    }
+
+    @Override
+    public Long searchRoomIdByUUID(String uuid) {
+        Object temp = redisTemplate.opsForValue().get(uuid);
+        long roomId = Long.parseLong(temp.toString());
+        return roomId;
+    }
+
+    @Override
+    public List<String> searchUserMeetingInMonth(HashMap param) {
+        List<String> list = meetingDao.searchUserMeetingInMonth(param);
+        return list;
     }
 
     private void startMeetingWorkflow(String uuid, int creatorId, String date, String start) {

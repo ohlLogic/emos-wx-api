@@ -86,5 +86,12 @@ workflow:
   url: http://192.168.2.102:9090/emos-workflow
 
 wx:
+  # 我的appid wxa7f1fd9b67de3ccc
+  # 我的secret f51e55afe76f797e687e7a1c1e9f97c2
   app-id: wxa7f1fd9b67de3ccc
   app-secret: f51e55afe76f797e687e7a1c1e9f97c2
+
+trtc:
+  appid: 1400714712
+  key: c98f15a2dc0c76e6bd3cf68e28be9680fb9f52d2d3b23b90a15a330eb5b99eee
+  expire: 86400
