@@ -5,6 +5,9 @@ import org.apache.http.HttpStatus;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 封装Web返回对象: R
+ */
 public class R extends HashMap<String, Object> {
     public R(){
         put("code", HttpStatus.SC_OK);

@@ -13,6 +13,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * 将OAuth2Filter和OAuth2Realm配置到Shiro框架
+ */
 @Configuration
 public class ShiroConfig {
     @Bean("securityManager")

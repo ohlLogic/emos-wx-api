@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
+/**
+ * 认证和授权方法
+ */
 @Component
 public class OAuth2Realm extends AuthorizingRealm {
 

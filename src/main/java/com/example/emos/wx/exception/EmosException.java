@@ -2,6 +2,9 @@ package com.example.emos.wx.exception;
 
 import lombok.Data;
 
+/**
+ * 自定义异常类：EmosException
+ */
 @Data
 public class EmosException extends RuntimeException{
     private String msg;

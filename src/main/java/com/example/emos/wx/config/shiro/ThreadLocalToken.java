@@ -2,6 +2,9 @@ package com.example.emos.wx.config.shiro;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * ThreadLocal
+ */
 @Component
 public class ThreadLocalToken {
     private ThreadLocal<String> local = new ThreadLocal<>();

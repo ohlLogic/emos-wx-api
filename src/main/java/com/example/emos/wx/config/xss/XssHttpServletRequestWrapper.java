@@ -13,13 +13,21 @@ import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * 请求包装类: XssHttpServletRequestWrapper
+ * 装饰器设计模式
+ */
 public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     public XssHttpServletRequestWrapper(HttpServletRequest request)
     {
         super(request);
     }
 
-
+    /**
+     * 通过Hutool工具进行转义
+     * @param name
+     * @return
+     */
     @Override
     public String getParameter(String name) {
         String value = super.getParameter(name);

@@ -9,6 +9,9 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * AOP切面类，用于拦截所有Web方法的返回值，在返回的R对象中添加token
+ */
 @Aspect
 @Component
 public class TokenAspect {

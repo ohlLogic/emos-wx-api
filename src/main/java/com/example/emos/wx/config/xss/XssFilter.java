@@ -1,5 +1,9 @@
 package com.example.emos.wx.config.xss;
 
+/**
+ * 过滤器XssFilter
+ */
+
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;

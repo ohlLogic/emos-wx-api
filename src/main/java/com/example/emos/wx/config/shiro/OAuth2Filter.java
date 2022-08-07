@@ -38,6 +38,13 @@ public class OAuth2Filter extends AuthenticatingFilter {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    /**
+     * 拦截请求之后，用于把令牌字符串封装成令牌对象
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
     @Override
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletRequest req = (HttpServletRequest) request;
@@ -46,9 +53,17 @@ public class OAuth2Filter extends AuthenticatingFilter {
         return new OAuth2Token(token);
     }
 
+    /**
+     * 拦截请求，判断请求是否需要被Shiro处理
+     * @param request
+     * @param response
+     * @param mappedValue
+     * @return
+     */
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
         HttpServletRequest req = (HttpServletRequest) request;
+        // Ajax提交的application/json数据，会发出options请求，放行不需要Shiro处理
         if(req.getMethod().equals(RequestMethod.OPTIONS.name()))
         {
             return true;
@@ -56,6 +71,13 @@ public class OAuth2Filter extends AuthenticatingFilter {
         return false;
     }
 
+    /**
+     * 所有被Shiro处理的请求
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletRequest req = (HttpServletRequest) request;
@@ -78,15 +100,18 @@ public class OAuth2Filter extends AuthenticatingFilter {
 
         // 验证token内容是否有效
         try {
+            // 验证令牌是否过期
             jwtUtil.verifierToken(token);
         } catch (TokenExpiredException e) {
-            // 刷新令牌
+            // 如果令牌过期，但是redis存在令牌，则刷新令牌
             if(redisTemplate.hasKey(token))
             {
                 redisTemplate.delete(token);
                 int userId = jwtUtil.getUserId(token);
                 token = jwtUtil.createToken(userId);
+                // 保存到redis
                 redisTemplate.opsForValue().set(token, userId + "", cacheExpire, TimeUnit.DAYS);
+                // 保存到线程
                 threadLocalToken.setToken(token);
             }
             else{
@@ -128,11 +153,17 @@ public class OAuth2Filter extends AuthenticatingFilter {
         super.doFilterInternal(request, response, chain);
     }
 
+    /**
+     * 从请求头中获取token
+     * @param request
+     * @return
+     */
     private String getRequestToken(HttpServletRequest request)
     {
         String token = request.getHeader("token");
         if(StrUtil.isBlank(token))
         {
+            // 如果header中不存在token，则从参数中获取token
             token = request.getParameter("token");
         }
         return token;
